@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galactic Guardians</title>
     <style>
-        /* Reset default margin and set full viewport height */
         body {
             margin: 0;
             height: 100vh;
@@ -16,7 +15,6 @@
             display: flex;
             flex-direction: column;
         }
-        /* Container for game elements */
         #gameContainer {
             display: flex;
             align-items: flex-start;
@@ -26,7 +24,6 @@
             width: 1040px;
             margin: 0 auto;
         }
-        /* Style for the banner image */
         #bannerImage {
             width: 100%;
             height: auto;
@@ -35,16 +32,13 @@
             align-self: flex-end;
             margin-top: 50px;
         }
-        /* Style for the game canvas */
         #gameCanvas {
             border: 2px solid white;
             display: none;
         }
-        /* Hide cursor when game is playing */
         #gameCanvas.playing {
             cursor: none;
         }
-        /* Style for the intro screen */
         #introScreen {
             position: fixed;
             top: 0;
@@ -58,14 +52,12 @@
             background-color: black;
             z-index: 10;
         }
-        /* Style for the intro image */
         #introImage {
             max-width: 80%;
             max-height: 60%;
             object-fit: contain;
             margin-bottom: 26px;
         }
-        /* Container for game elements */
         #gameElements {
             display: none;
             flex-grow: 1;
@@ -73,7 +65,6 @@
             justify-content: center;
             margin-top: -150px;
         }
-        /* Container for the energy bar */
         #energyBarContainer {
             display: flex;
             flex-direction: column;
@@ -83,7 +74,6 @@
             margin-left: 10px; 
             height: 780px;
         }
-        /* Style for energy bar heading */
         #energyBarHeading {
             color: white;
             font-size: 18px;
@@ -93,7 +83,6 @@
             transform: rotate(180deg);
             letter-spacing: 2px;
         }
-        /* Style for energy bar */
         #energyBar {
             width: 30px;
             flex-grow: 1;
@@ -103,7 +92,6 @@
             position: relative;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
-        /* Style for energy level indicator */
         #energyLevel {
             width: 100%;
             height: 100%;
@@ -113,7 +101,6 @@
             bottom: 0;
             border-radius: 15px;
         }
-        /* Style for description panel */
         #descriptionPanel {
             width: 260px;
             padding: 17px;
@@ -124,11 +111,9 @@
             overflow-y: auto;
             margin-left: 20px;
         }
-        /* Style for description items */
         .description-item {
             margin-bottom: 15px;
         }
-        /* Style for images in description items */
         .description-item img {
             width: 85px;
             height: 85px;
@@ -136,18 +121,15 @@
             margin-right: 17px;
             vertical-align: middle;
         }
-        /* Style for paragraphs in description items */
         .description-item p {
             margin: 9px 0;
             font-size: 18px;
         }
-        /* Style for controls description */
         .description-item.controls-description {
             margin-top: 0;
             border-top: 1px solid rgba(255, 255, 255, 0.3);
             padding-top: 0;
         }
-        /* Style for key icons */
         .key-icon {
             display: inline-block;
             background-color: #444;
@@ -158,18 +140,15 @@
             font-family: monospace;
             font-size: 16px;
         }
-        /* Container for game canvas */
         #gameCanvasContainer {
             position: relative;
         }
-        /* Style for score display */
         #scoreDisplay {
             position: absolute;
             top: -35px;
             left: 0;
             font-size: 24px;
         }
-        /* Style for high score display */
         #highScoreDisplay {
             position: absolute;
             top: -35px;
@@ -190,24 +169,19 @@
     </style>
 </head>
 <body>
-    <!-- Intro screen -->
     <div id="introScreen">
         <img id="introImage" src="introScreen.png" alt="Galactic Guardians Intro">
         <div id="startMessage">Click anywhere to start the game!</div>
     </div>
-    <!-- Banner container -->
     <div id="bannerContainer">
         <img id="bannerImage" src="banner.png" alt="Game Banner">
     </div>
-    <!-- Main game elements container -->
     <div id="gameElements">
         <div id="gameContainer">
-            <!-- Energy bar -->
             <div id="energyBarContainer">
                 <div id="energyBarHeading">ENERGY</div>
                 <div id="energyBar"><div id="energyLevel"></div></div>
             </div>
-            <!-- Game canvas container -->
             <div id="gameCanvasContainer">
                 <div id="scoreDisplay">Score: 0</div>
                 <div id="highScoreDisplay">High Score: 0</div>
@@ -216,7 +190,6 @@
                     by David Möllersten using only GenAI technology
                 </div>
             </div>
-            <!-- Description panel -->
             <div id="descriptionPanel">
                 <div class="description-item">
                     <img src="enemy_ship.png" alt="Enemy Ship">
@@ -245,7 +218,6 @@
         </div>
     </div>
     
-    <!-- Hidden container for sprite images -->
     <div style="display:none;">
         <img id="player-sprite" src="player_ship.png" onerror="imageLoadError(this)">
         <img id="enemy-sprite" src="enemy_ship.png" onerror="imageLoadError(this)">
@@ -254,14 +226,10 @@
     </div>
     
     <script>
-        // Initialize audio context
         let audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let gameOverSound;
-
-        // Get canvas and context
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        // Get DOM elements
         const scoreDisplay = document.getElementById('scoreDisplay');
         const highScoreDisplay = document.getElementById('highScoreDisplay');
         const playerSprite = document.getElementById('player-sprite');
@@ -270,52 +238,40 @@
         const powerupSprite = document.getElementById('powerup-sprite');
         const specialEnemySprite = document.getElementById('special-enemy-sprite');
         const energyLevel = document.getElementById('energyLevel');
-
-        // Game state variables
         let isFlashing = false;
         let flashStartTime = 0;
         const flashDuration = 1000;
-
         let specialEnemy = null;
         let specialEnemySound;
         let waitingForSpecialEnemy = false;
-
         let shootSound, explosionSound, backgroundMusic;
-
-        // Player object
+        
         const player = {
             x: canvas.width / 2 - 33,
             y: canvas.height - 91,
             width: 65,
             height: 91,
-            speed: 7,
+            speed: 300,
             scale: 1,
             energy: 100
         };
-
-        // Bullet configuration
         const bulletConfig = {
             width: 5,
-            height: 21
+            height: 21,
+            speed: 500
         };
-
-        // Power-up configuration
         const powerUpConfig = {
             width: 33,
-            height: 33
+            height: 33,
+            speed: 150
         };
-
-        // Audio variables
         let backgroundMusicSource;
         let backgroundMusicGain;
         let shootSoundBuffer;
         let explosionSoundBuffer;
-
         const MAX_SOUNDS = 5;
         const shootSounds = [];
         const explosionSounds = [];
-
-        // Game state arrays
         let enemies = [];
         let bullets = [];
         let stars = [];
@@ -323,21 +279,19 @@
         let gameOver = false;
         let score = 0;
         let highScore = localStorage.getItem('highScore') || 0;
-        let enemySpeed = 1;
+        let enemySpeed = 50;
         let lastShotTime = 0;
         let shootCooldown = 500;
         let enemyBullets = [];
         let isPaused = false;
         let isQuitting = false;
-
-        // Initialize audio
+        let lastTime = 0;
+        let gameSpeed = 2;
         function initAudio() {
             return new Promise((resolve, reject) => {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 backgroundMusicGain = audioContext.createGain();
                 backgroundMusicGain.connect(audioContext.destination);
-
-                // Load audio files
                 Promise.all([
                     fetch('shoot.mp3').then(response => response.arrayBuffer()),
                     fetch('explosion.mp3').then(response => response.arrayBuffer()),
@@ -359,7 +313,6 @@
                         audioContext.decodeAudioData(powerUpBuffer)
                     ]);
                 }).then(([shootAudio, explosionAudio, musicAudio, specialEnemyAudio, specialEnemyExplosionAudio, gameOverAudio, playerShipLosingEnergyAudio, powerUpAudio]) => {
-                    // Set up audio buffers and sources
                     shootSoundBuffer = shootAudio;
                     explosionSoundBuffer = explosionAudio;
                     
@@ -377,47 +330,39 @@
                     backgroundMusicGain.gain.setValueAtTime(0.7, audioContext.currentTime);
                     
                     backgroundMusicSource.start();
-
                     specialEnemySound = createSound(specialEnemyAudio);
                     specialEnemyExplosionSound = createSound(specialEnemyExplosionAudio);
                     gameOverSound = createSound(gameOverAudio);
                     playerShipLosingEnergySound = createSound(playerShipLosingEnergyAudio);
                     powerUpSound = createSound(powerUpAudio);
-
                     resolve();
                 }).catch(error => {
                     reject(error);
                 });
             });
         }
-
-        // Create special enemy
         function createSpecialEnemy() {
-            if (!specialEnemy && Math.random() < 0.0002) {
+            if (!specialEnemy && Math.random() < 0.0002 * gameSpeed) {
                 const topRowY = 39;
                 const topRowHeight = 78;
-
                 const enemiesInTopRow = enemies.some(enemy => 
                     enemy.y >= topRowY && enemy.y < topRowY + topRowHeight
                 );
-
                 if (!enemiesInTopRow) {
                     specialEnemy = {
                         x: canvas.width + 65,
                         y: topRowY,
                         width: 78,
                         height: 78,
-                        speed: 3
+                        speed: 150
                     };
                     playSound(specialEnemySound);
                 }
             }
         }
-
-        // Move special enemy
-        function moveSpecialEnemy() {
+        function moveSpecialEnemy(deltaTime) {
             if (specialEnemy) {
-                specialEnemy.x -= specialEnemy.speed;
+                specialEnemy.x -= specialEnemy.speed * deltaTime * gameSpeed;
                 if (specialEnemy.x + specialEnemy.width < 0) {
                     specialEnemy = null;
                     if (enemies.length === 0) {
@@ -426,15 +371,11 @@
                 }
             }
         }
-
-        // Draw special enemy
         function drawSpecialEnemy() {
             if (specialEnemy) {
                 ctx.drawImage(specialEnemySprite, specialEnemy.x, specialEnemy.y, specialEnemy.width, specialEnemy.height);
             }
         }
-
-        // Check for collision with special enemy
         function checkSpecialEnemyCollision() {
             if (specialEnemy) {
                 for (let i = bullets.length - 1; i >= 0; i--) {
@@ -449,23 +390,17 @@
                         updateScore();
                         playSound(specialEnemyExplosionSound);
                         specialEnemy = null;
-
                         createFlashEffect();
-
                         break;
                     }
                 }
             }
         }
-
-        // Set music volume
         function setMusicVolume(volume) {
             if (backgroundMusicGain) {
                 backgroundMusicGain.gain.setValueAtTime(volume, audioContext.currentTime);
             }
         }
-
-        // Create a sound from buffer
         function createSound(buffer) {
             return () => {
                 const source = audioContext.createBufferSource();
@@ -478,8 +413,6 @@
                 return source;
             };
         }
-
-        // Play a sound
         function playSound(sound) {
             if (!audioContext) return;
             
@@ -496,16 +429,12 @@
                 }
             }
         }
-
-        // Handle image load errors
         function imageLoadError(img) {
             console.error(`Failed to load image: ${img.src}`);
             alert(`Failed to load image: ${img.src}. Check the console for more details.`);
         }
-
-        // Create enemy ships
         function createEnemies() {
-            enemySpeed += 0.2;
+            enemySpeed += 10;
             for (let i = 0; i < 5; i++) {
                 for (let j = 0; j < 3; j++) {
                     if (!enemies.some(e => e.x === i * 104 + 78 && e.y === j * 65 + 39)) {
@@ -521,19 +450,16 @@
                 }
             }
         }
-
-        // Create background stars
         function createStars() {
             for (let i = 0; i < 130; i++) {
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 3
+                    size: Math.random() * 3,
+                    speed: 30 + Math.random() * 50
                 });
             }
         }
-
-        // Draw player ship
         function drawPlayer() {
             const scaledWidth = player.width * player.scale;
             const scaledHeight = player.height * player.scale;
@@ -545,16 +471,12 @@
                 scaledHeight
             );
         }
-
-        // Draw enemy bullets
         function drawEnemyBullets() {
             ctx.fillStyle = 'red';
             enemyBullets.forEach(bullet => {
                 ctx.fillRect(bullet.x, bullet.y, 5, 13);
             });
         }
-
-        // Animate power-up effect
         function animatePowerUpEffect() {
             const duration = 500;
             const startTime = Date.now();
@@ -575,31 +497,23 @@
             
             animate();
         }
-
-        // Draw enemy ships
         function drawEnemies() {
             enemies.forEach(enemy => {
                 ctx.drawImage(enemySprite, enemy.x, enemy.y, enemy.width, enemy.height);
             });
         }
-
-        // Draw player bullets
         function drawBullets() {
             ctx.fillStyle = 'white';
             bullets.forEach(bullet => {
                 ctx.fillRect(bullet.x - bulletConfig.width / 2, bullet.y - bulletConfig.height, bulletConfig.width, bulletConfig.height);
             });
         }
-
-        // Draw background stars
         function drawStars() {
             ctx.fillStyle = 'white';
             stars.forEach(star => {
                 ctx.fillRect(star.x, star.y, star.size, star.size);
             });
         }
-
-        // Draw power-ups
         function drawPowerUps() {
             powerUps.forEach(powerUp => {
                 ctx.drawImage(
@@ -609,8 +523,6 @@
                 );
             });
         }
-
-        // Draw flash effect
         function drawFlashEffect() {
             if (isFlashing) {
                 const elapsedTime = Date.now() - flashStartTime;
@@ -623,22 +535,18 @@
                 }
             }
         }
-
-        // Move player ship
-        function movePlayer() {
+        function movePlayer(deltaTime) {
             if (keys.ArrowLeft && player.x > 0) {
-                player.x -= player.speed;
+                player.x -= player.speed * deltaTime * gameSpeed;
             }
             if (keys.ArrowRight && player.x < canvas.width - player.width) {
-                player.x += player.speed;
+                player.x += player.speed * deltaTime * gameSpeed;
             }
         }
-
-        // Move enemy ships
-        function moveEnemies() {
+        function moveEnemies(deltaTime) {
             let shouldChangeDirection = false;
             enemies.forEach(enemy => {
-                enemy.x += enemy.speed * enemy.direction;
+                enemy.x += enemy.speed * enemy.direction * deltaTime * gameSpeed;
                 if (enemy.x <= 0 || enemy.x + enemy.width >= canvas.width) {
                     shouldChangeDirection = true;
                 }
@@ -646,56 +554,45 @@
             if (shouldChangeDirection) {
                 enemies.forEach(enemy => {
                     enemy.direction *= -1;
-                    enemy.y += 26;
+                    enemy.y += 26 * gameSpeed;
                 });
             }
         }
-
-        // Move player bullets
-        function moveBullets() {
+        function moveBullets(deltaTime) {
             bullets.forEach(bullet => {
-                bullet.y -= 9;
+                bullet.y -= bulletConfig.speed * deltaTime * gameSpeed;
             });
             bullets = bullets.filter(bullet => bullet.y > 0);
         }
-
-        // Move enemy bullets
-        function moveEnemyBullets() {
+        function moveEnemyBullets(deltaTime) {
             enemyBullets.forEach(bullet => {
-                bullet.y += 4;
+                bullet.y += 200 * deltaTime * gameSpeed;
             });
             enemyBullets = enemyBullets.filter(bullet => bullet.y < canvas.height);
         }
-
-        // Move background stars
-        function moveStars() {
+        function moveStars(deltaTime) {
             stars.forEach(star => {
-                star.y += 0.7;
+                star.y += star.speed * deltaTime * gameSpeed;
                 if (star.y > canvas.height) {
                     star.y = 0;
                     star.x = Math.random() * canvas.width;
                 }
             });
         }
-
-        // Move power-ups
-        function movePowerUps() {
+        function movePowerUps(deltaTime) {
             powerUps.forEach(powerUp => {
-                powerUp.y += 3;
+                powerUp.y += powerUpConfig.speed * deltaTime * gameSpeed;
             });
             powerUps = powerUps.filter(powerUp => powerUp.y < canvas.height);
         }
-
-        // Enemy shooting logic
-        function enemyShoot() {
+        function enemyShoot(deltaTime) {
             const bottomEnemies = enemies.filter(enemy => 
                 !enemies.some(otherEnemy => 
                     otherEnemy.x === enemy.x && otherEnemy.y > enemy.y
                 )
             );
-
             bottomEnemies.forEach(enemy => {
-                if (Math.random() < 0.001) {
+                if (Math.random() < 0.001 * gameSpeed * deltaTime * 60) {
                     enemyBullets.push({
                         x: enemy.x + enemy.width / 2,
                         y: enemy.y + enemy.height
@@ -703,74 +600,53 @@
                 }
             });
         }
-
-        // Clear high score from local storage
         function clearHighScore() {
             localStorage.removeItem('highScore');
             highScore = 0;
             highScoreDisplay.textContent = 'High Score: 0';
         }
-
-        // Toggle game pause
         function togglePause() {
             isPaused = !isPaused;
             if (isPaused) {
                 canvas.classList.remove('playing');
             } else {
                 canvas.classList.add('playing');
+                lastTime = performance.now();
                 requestAnimationFrame(gameLoop);
             }
         }
-
-        // Draw pause message
         function drawPauseMessage() {
             ctx.save();
             ctx.resetTransform();
-
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.fillStyle = 'white';
             ctx.font = '62px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-
             ctx.fillText('PAUSED', centerX, centerY - 40);
-
             ctx.font = '31px Arial';
             ctx.fillText('Press P to resume', centerX, centerY + 40);
-
             ctx.restore();
         }
-
-        // Draw game over message
         function drawGameOverMessage() {
             ctx.save();
             ctx.resetTransform();
-
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.fillStyle = 'white';
             ctx.font = '62px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-
             ctx.fillText('Game Over', centerX, centerY - 40);
-
             ctx.font = '31px Arial';
             ctx.fillText('Press R to restart', centerX, centerY + 40);
-
             ctx.restore();
         }
-
-        // Draw quit confirmation message
         function drawQuitConfirmation() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -781,14 +657,10 @@
             ctx.font = '31px Arial';
             ctx.fillText('Press Y to confirm or N to cancel', canvas.width / 2, canvas.height / 2 + 52);
         }
-
-        // Update energy bar display
         function updateEnergyBar() {
             const energyPercentage = player.energy / 100;
             energyLevel.style.height = `${energyPercentage * 100}%`;
         }
-
-        // Check for collisions
         function checkCollisions() {
             bullets = bullets.filter(bullet => {
                 let bulletHit = false;
@@ -801,7 +673,6 @@
                         score += 10;
                         updateScore();
                         playSound(explosionSounds);
-
                         if (Math.random() < 0.03) {
                             powerUps.push({
                                 x: enemy.x,
@@ -811,20 +682,16 @@
                                 type: 'energy'
                             });
                         }
-
                         bulletHit = true;
                         return false;
                     }
                     return true;
                 });
-
                 if (enemies.length === 0 && !specialEnemy) {
                     createEnemies();
                 }
-
                 return !bulletHit;
             });
-
             enemyBullets.forEach((bullet, index) => {
                 if (bullet.x < player.x + player.width &&
                     bullet.x + 5 > player.x &&
@@ -843,14 +710,12 @@
                     enemyBullets.splice(index, 1);
                 }
             });
-
             powerUps.forEach((powerUp, index) => {
                 if (player.x < powerUp.x + 26 &&
                     player.x + player.width > powerUp.x &&
                     player.y < powerUp.y + 26 &&
                     player.y + player.height > powerUp.y) {
                     powerUps.splice(index, 1);
-
                     if (powerUp.type === 'energy') {
                         if (player.energy < 100) {
                             player.energy = Math.min(player.energy + 15, 100);
@@ -861,7 +726,6 @@
                     }
                 }
             });
-
             enemies.forEach(enemy => {
                 if (enemy.y + enemy.height > player.y) {
                     gameOver = true;
@@ -870,8 +734,6 @@
                 }
             });
         }
-
-        // Update score display
         function updateScore() {
             document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
             if (score > highScore) {
@@ -880,14 +742,10 @@
                 document.getElementById('highScoreDisplay').textContent = `High Score: ${highScore}`;
             }
         }
-
-        // Create flash effect
         function createFlashEffect() {
             isFlashing = true;
             flashStartTime = Date.now();
         }
-
-        // Play game over sound
         function playGameOverSound() {
             if (gameOverSound) {
                 try {
@@ -900,24 +758,23 @@
                 console.error('Game over sound not loaded');
             }
         }
-
-        // Main game loop
-        function gameLoop() {
+        function gameLoop(currentTime) {
             if (gameOver) {
                 drawGameOverMessage();
                 return;
             }
-
             if (isPaused) {
                 drawPauseMessage();
                 return;
             }
-
             if (isQuitting) {
                 drawQuitConfirmation();
                 return;
             }
-
+            
+            const deltaTime = (currentTime - lastTime) / 1000;
+            lastTime = currentTime;
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             drawStars();
@@ -928,31 +785,28 @@
             drawPowerUps();
             drawSpecialEnemy();
             drawFlashEffect();
-
-            movePlayer();
-            moveEnemies();
-            moveBullets();
-            moveEnemyBullets();
-            moveStars();
-            movePowerUps();
+            
+            movePlayer(deltaTime);
+            moveEnemies(deltaTime);
+            moveBullets(deltaTime);
+            moveEnemyBullets(deltaTime);
+            moveStars(deltaTime);
+            movePowerUps(deltaTime);
+            
             if (!specialEnemy) {
                 createSpecialEnemy();
             }
-            moveSpecialEnemy();
-            enemyShoot();
+            moveSpecialEnemy(deltaTime);
+            enemyShoot(deltaTime);
             checkCollisions();
             checkSpecialEnemyCollision();
-
+            
             requestAnimationFrame(gameLoop);
         }
-
-        // Object to track pressed keys
         const keys = {};
-
-        // Player shooting function
         function shoot() {
             const currentTime = Date.now();
-            if (currentTime - lastShotTime >= shootCooldown) {
+            if (currentTime - lastShotTime >= shootCooldown / gameSpeed) {
                 bullets.push({ 
                     x: player.x + player.width / 2, 
                     y: player.y - bulletConfig.height
@@ -962,8 +816,6 @@
                 playSound(shootSounds);
             }
         }
-
-        // Start the game
         function startGame() {
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
@@ -982,12 +834,11 @@
             updateScore();
             updateEnergyBar();
             document.getElementById('highScoreDisplay').textContent = `High Score: ${highScore}`;
-            gameLoop();
+            lastTime = performance.now();
+            gameLoop(lastTime);
             
             document.removeEventListener('click', startGame);
         }
-
-        // Event listener for keydown events
         document.addEventListener('keydown', e => {
             keys[e.code] = true;
             if (e.code === 'Space') {
@@ -1011,42 +862,36 @@
                     window.location.reload();
                 } else if (e.code === 'KeyN') {
                     isQuitting = false;
+                    lastTime = performance.now();
                     requestAnimationFrame(gameLoop);
                 }
             }
         });
-
-        // Event listener for keyup events
         document.addEventListener('keyup', e => {
             keys[e.code] = false;
         });
-
-        // Event listener to start the game
         document.addEventListener('click', startGame);
-
-        // Restart the game
         function restartGame() {
             player.x = canvas.width / 2;
             player.energy = 100;
             bullets = [];
             enemyBullets = [];
             powerUps = [];
-            enemies = []; // Clear existing enemies
-            specialEnemy = null; // Reset special enemy
+            enemies = [];
+            specialEnemy = null;
             gameOver = false;
             isPaused = false;
             score = 0;
-            enemySpeed = 1;
+            enemySpeed = 50;
             shootCooldown = 500;
             updateScore();
             updateEnergyBar();
-            createEnemies(); // Create new set of enemies
-            createStars(); // Recreate stars for consistency
+            createEnemies();
+            createStars();
             canvas.classList.add('playing');
+            lastTime = performance.now();
             requestAnimationFrame(gameLoop);
         }
-
-        // Initialize audio on user interaction
         document.addEventListener('click', function initAudioOnUserInteraction() {
             if (!audioContext) {
                 initAudio();
